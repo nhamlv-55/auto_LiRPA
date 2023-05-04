@@ -175,7 +175,7 @@ def augment_gradient_graph(self, dummy_input, norm=None, vector=None):
 
 
 def compute_jacobian_bounds(
-        self, x, optimize=True, reduce=True, c_opt=None, labels=None):
+        self, x, optimize=True, reduce=True, c_opt=None, labels=None, return_immediate_bounds=False):
     """Compute jacobian bounds on the pre-augmented graph.
 
     Args:
@@ -187,6 +187,7 @@ def compute_jacobian_bounds(
         computational graph.
         labels (optional): Ground-truth labels for constructing a default c_opt
         if it c_opt not explicitly provided.
+        return_intermediate_bounds: Whether the function should return the jacobian bounds for intermediate nodes as well
 
     Returns:
         ret: If reduce=True, return the maximum Jacobian bounds over all the
@@ -210,7 +211,7 @@ def compute_jacobian_bounds(
             # Specification for optimizing the forward graph.
             c_opt = get_spec_matrix(x, labels, num_classes)
 
-    ret, lower, upper = [], [], []
+    ret, lower, upper, im_bounds = [], [], [], []
     grad_start = torch.zeros(x.size(0), num_classes).to(x)
     for j in range(num_classes):
         grad_start.zero_()
@@ -233,6 +234,8 @@ def compute_jacobian_bounds(
         else:
             lower.append(lb.view(1, -1))
             upper.append(ub.view(1, -1))
+        if return_immediate_bounds:
+            im_bounds.append(intermediate_bounds)
     if norm is not None:
         ret = torch.concat(ret)
         if reduce:
@@ -242,4 +245,7 @@ def compute_jacobian_bounds(
     else:
         lower = torch.concat(lower, dim=0)
         upper = torch.concat(upper, dim=0)
-        return lower, upper
+        if return_immediate_bounds:
+            return lower, upper, im_bounds
+        else:
+            return lower, upper
