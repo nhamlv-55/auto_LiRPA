@@ -2,7 +2,7 @@
 from .base import *
 from ..patches import Patches, patches_to_matrix
 from .linear import BoundLinear
-from .gradient_modules import ReshapeGrad
+from .gradient_modules import ReshapeGrad, FlattenGrad
 
 
 class BoundReshape(Bound):
@@ -186,6 +186,11 @@ class BoundFlatten(Bound):
         # e.g., v[0] input shape (16, 8, 8) => output shape (1024,)
         self.solver_vars = np.array(v[0]).reshape(-1).tolist()
         model.update()
+
+    def build_gradient_node(self, grad_upstream):
+        node_grad = ReshapeGrad()
+        grad_input = (grad_upstream, self.inputs[0].forward_value)
+        return node_grad, grad_input, []
 
 
 
