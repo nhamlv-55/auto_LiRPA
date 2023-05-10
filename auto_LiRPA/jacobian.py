@@ -175,7 +175,7 @@ def augment_gradient_graph(self, dummy_input, norm=None, vector=None):
 
 
 def compute_jacobian_bounds(
-        self, x, optimize=True, reduce=True, c_opt=None, labels=None, return_immediate_bounds=False):
+        self, x, optimize=True, reduce=True, c_opt=None, labels=None, return_immediate_bounds=False, final_node_name: str|None=None):
     """Compute jacobian bounds on the pre-augmented graph.
 
     Args:
@@ -226,15 +226,20 @@ def compute_jacobian_bounds(
             for node in self._modules.values():
                 if hasattr(node, 'lower') and node.lower is not None:
                     intermediate_bounds[node.name] = (node.lower, node.upper)
+                # else:
+                    # print(f"{node} does not have precomputed bounds")
+
         lb, ub = self.compute_bounds(
                 method='CROWN', x=(x,) + x_extra, bound_lower=norm is None,
-                intermediate_layer_bounds=intermediate_bounds)
+                intermediate_layer_bounds=intermediate_bounds, final_node_name = final_node_name)
+
         if norm is not None:
             ret.append(ub.view(-1))
         else:
             lower.append(lb.view(1, -1))
             upper.append(ub.view(1, -1))
         if return_immediate_bounds:
+            intermediate_bounds["/grad_norm"] = (lb.view(1, -1), ub.view(1, -1))
             im_bounds.append(intermediate_bounds)
     if norm is not None:
         ret = torch.concat(ret)
