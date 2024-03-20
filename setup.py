@@ -3,7 +3,7 @@ from pathlib import Path
 
 # Check PyTorch version
 pytorch_version_l = '1.11.0'
-pytorch_version_u = '2.1.0' # excluded
+pytorch_version_u = '2.2.2' # excluded
 msg_install_pytorch = (f'It is recommended to manually install PyTorch '
                     f'(>={pytorch_version_l},<{pytorch_version_u}) suitable '
                     'for your system ahead: https://pytorch.org/get-started.\n')
