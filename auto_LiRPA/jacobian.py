@@ -329,13 +329,8 @@ def augment_gradient_graph(self: 'BoundedModule', dummy_input, norm=None,
     return self
 
 
-<<<<<<< HEAD
 def compute_jacobian_bounds(
         self, x, optimize=True, reduce=True, c_opt=None, labels=None, return_immediate_bounds=False, final_node_name: str|None=None):
-=======
-def compute_jacobian_bounds(self: 'BoundedModule', x, optimize=True,
-                            reduce=True, c_opt=None, labels=None):
->>>>>>> bc47650 (October 2023 release)
     """Compute jacobian bounds on the pre-augmented graph.
 
     Args:
@@ -388,7 +383,7 @@ def compute_jacobian_bounds(self: 'BoundedModule', x, optimize=True,
 
         lb, ub = self.compute_bounds(
                 method='CROWN', x=(x,) + x_extra, bound_lower=norm is None,
-                interm_bounds=intermediate_bounds)
+                interm_bounds=intermediate_bounds, final_node_name = final_node_name)
         if norm is not None:
             ret.append(ub.view(-1))
         else:
@@ -406,6 +401,9 @@ def compute_jacobian_bounds(self: 'BoundedModule', x, optimize=True,
     else:
         lower = torch.concat(lower, dim=0)
         upper = torch.concat(upper, dim=0)
+        if return_immediate_bounds:
+            return lower, upper, im_bounds
+
         return lower, upper
 
 
