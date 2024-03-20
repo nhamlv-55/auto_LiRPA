@@ -1,5 +1,5 @@
 """Handle Jacobian bounds."""
-
+from __future__ import annotations
 import torch
 import numpy as np
 from auto_LiRPA.bound_ops import JacobianOP, GradNorm  # pylint: disable=unused-import

@@ -222,10 +222,6 @@ class BoundFlatten(Bound):
         node_grad = ReshapeGrad()
         grad_input = (grad_upstream, self.inputs[0].forward_value)
         return node_grad, grad_input, []
-<<<<<<< HEAD
-
-=======
->>>>>>> bc47650 (October 2023 release)
 
 
 class BoundConcat(Bound):
