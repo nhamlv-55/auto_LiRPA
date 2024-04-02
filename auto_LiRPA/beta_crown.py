@@ -77,6 +77,10 @@ def set_beta(self: 'BoundedModule', enable_opt_interm_bounds, parameters,
 
     # TODO compute only once
     self.nodes_with_beta = []
+
+    if not hasattr(self, 'split_nodes'):
+        self.get_split_nodes()
+
     for node in self.split_nodes:
         if not hasattr(node, 'sparse_betas'):
             continue
