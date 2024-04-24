@@ -10,6 +10,7 @@ from .beta_crown import print_optimized_beta
 from .cuda_utils import double2float
 from .utils import logger, reduction_sum, multi_spec_keep_func_all
 from .opt_pruner import OptPruner
+from tqdm import tqdm
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -390,7 +391,7 @@ def _get_optimized_bounds(
 
     need_grad = True
     patience = 0
-    for i in range(iteration):
+    for i in tqdm(range(iteration)):
         if cutter:
             # cuts may be optimized by cutter
             self.cut_module = cutter.cut_module
