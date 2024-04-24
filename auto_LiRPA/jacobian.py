@@ -330,7 +330,7 @@ def augment_gradient_graph(self: 'BoundedModule', dummy_input, norm=None,
 
 
 def compute_jacobian_bounds(
-        self, x, optimize=True, reduce=True, c_opt=None, labels=None, return_immediate_bounds=False, final_node_name: str|None=None):
+        self, x, optimize=True, reduce=True, c_opt=None, labels=None, target_label = -1, return_immediate_bounds=False, final_node_name: str|None=None):
     """Compute jacobian bounds on the pre-augmented graph.
 
     Args:
@@ -365,7 +365,12 @@ def compute_jacobian_bounds(
 
     ret, lower, upper, im_bounds = [], [], [], []
     grad_start = torch.zeros(x.size(0), num_classes).to(x)
-    for j in range(num_classes):
+
+    if target_label==-1:
+        targets = range(classes)
+    else:
+        targets = [target_label]
+    for j in targets:
         grad_start.zero_()
         grad_start[:, j] = 1
         x_extra = (grad_start,)
