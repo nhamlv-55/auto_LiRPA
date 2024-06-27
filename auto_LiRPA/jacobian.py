@@ -367,7 +367,7 @@ def compute_jacobian_bounds(
     grad_start = torch.zeros(x.size(0), num_classes).to(x)
 
     if target_label==-1:
-        targets = range(classes)
+        targets = range(num_classes)
     else:
         targets = [target_label]
     for j in targets:
